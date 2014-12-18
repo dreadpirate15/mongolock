@@ -99,8 +99,8 @@ def test_lock_released_if_exception_raised(lock):
 
 
 def touch_expired_not_specified(lock):
-    lock.lock('key', 'owner', expire=1)
-    lock.touch('key', 'owner', expire=1)
+    lock.lock('key', 'owner')
+    lock.touch('key', 'owner')
     assert lock.get_lock_info('key')['expire'] is None
 
 
