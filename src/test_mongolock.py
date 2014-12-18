@@ -73,15 +73,21 @@ def test_context_raises_if_locked(lock):
 def test_touch(lock):
     dtnow = datetime.utcnow()
     lock.lock('key', 'owner', expire=1)
-    lock.touch('key', 'owner')
+    lock.touch('key', 'owner', expire=1)
     new_expire = lock.get_lock_info('key')['expire']
     assert new_expire > dtnow
+
+
+def test_cant_touch_without_expire(lock):
+    lock.lock('key', 'another_one', expire=1)
+    with pytest.raises(MongoLockException):
+        lock.touch('key', 'owner')
 
 
 def test_cant_touch_locked_by_another(lock):
     lock.lock('key', 'another_one', expire=1)
     with pytest.raises(MongoLockException):
-        lock.touch('key', 'owner')
+        lock.touch('key', 'owner', expire=1)
 
 def test_lock_released_if_exception_raised(lock):
     try:
